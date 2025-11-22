@@ -1,24 +1,33 @@
 import "dotenv/config";
 import Fastify from "fastify";
-import os from "os";
-import fastifyCors from "@fastify/cors";
+import cors from "@fastify/cors";
+import path, { dirname } from "path";
 
-import { auth } from "@ams-backend/auth";
-
-const baseCorsConfig = {
-	origin: process.env.CORS_ORIGIN || "",
-	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-	allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-	credentials: true,
-	maxAge: 86400,
-};
+import { auth } from "@/plugins/auth";
+import AutoLoad from "@fastify/autoload";
+import { fileURLToPath } from "url";
 
 const fastify = Fastify({
 	logger: true,
 });
 
-fastify.register(fastifyCors, baseCorsConfig);
+// CORS configuration
+fastify.register(cors, {
+	origin: process.env.CORS_ORIGIN || "",
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+	credentials: true,
+	maxAge: 86400,
+});
 
+// Register routes
+const __filename = fileURLToPath(import.meta.url) 
+fastify.register(AutoLoad, {
+  dir: path.join(dirname(__filename), 'routes')
+});
+
+
+// Auth routes - better-auth
 fastify.route({
 	method: ["GET", "POST"],
 	url: "/api/auth/*",
@@ -48,28 +57,11 @@ fastify.route({
 	},
 });
 
-fastify.get("/", async () => {
-	return { message: "Hi User <3 - AMS Backend Server", 
-		version: process.env.VERSION || "dev", 
-		timestamp: new Date().toISOString(),
-	};
-});
 
-fastify.get("/health", async () => {
-	return { message: "OK.", 
-		version: process.env.VERSION || "dev", 
-		timestamp: new Date().toISOString(),
-		uptime: {
-			process: process.uptime().toFixed(0),
-			server: os.uptime().toFixed(0)
-		}
-	};
-});
-
-fastify.listen({ port: 3000 }, (err) => {
+fastify.listen({ port: Number(process.env.PORT) || 3000 }, (err) => {
 	if (err) {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	console.log("Server running on port 3000");
+	console.log(`Server running on port ${process.env.PORT || 3000}`);
 });
