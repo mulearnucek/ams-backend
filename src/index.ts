@@ -1,11 +1,12 @@
 import "dotenv/config";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import path, { dirname } from "path";
-
-import { auth } from "@/plugins/auth";
 import AutoLoad from "@fastify/autoload";
-import { fileURLToPath } from "url";
+
+import { auth } from "./plugins/auth";
 
 const fastify = Fastify({
 	logger: true,
