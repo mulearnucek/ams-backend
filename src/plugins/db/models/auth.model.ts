@@ -1,4 +1,8 @@
-import mongoose from "mongoose";
+import { role } from "better-auth/client";
+import { password } from "bun";
+import mongoose, { mongo } from "mongoose";
+import { string } from "zod";
+import { required } from "zod/mini";
 
 const { Schema, model } = mongoose;
 
@@ -11,6 +15,15 @@ const userSchema = new Schema(
 		image: { type: String },
 		createdAt: { type: Date, required: true },
 		updatedAt: { type: Date, required: true },
+		first_name: { type: String, required: true },
+		last_name: { type: String, required: true },
+		role_of_user: { 
+			type: String, 
+			required: true,
+			enum: ["student", "teacher", "parent", "principal", "hod", "staff", "admin"]
+		},
+		phone : {type: Number, required: true},
+		password_hash: { type: String, required: true },
 	},
 	{ collection: "user" },
 );
@@ -60,9 +73,59 @@ const verificationSchema = new Schema(
 	{ collection: "verification" },
 );
 
+const studentSchema = new Schema(
+	{
+		_id: { type: String },
+		user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+		gender: { 
+			type: String, 
+			required: true,
+			enum: ["male", "female", "other"]
+		},
+		adm_number : {type: String, required: true , unique: true },
+		adm_year: { type: Number, required: true },
+		candidate_code: { type: String, required: true , unique: true },
+		department: { 
+			type: String, 
+			required:true,
+			enum: ["CSE", "ECE", "IT"]
+		},
+		date_of_birth: { type: Date, required: true },
+	},
+	{ collection: "student" },
+);
+
+const teacherSchema = new Schema(
+	{
+		_id: { type: String },
+		user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+		designation : {type: String, required: true},
+		department: { type: String, required: true },
+		date_of_joining: { type: Date, required: true },
+	},
+	{ collection: "teacher" },
+);
+
+const parentSchema = new Schema(
+	{
+		_id: { type: String },
+		user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+		child: { type: mongoose.Schema.Types.ObjectId, ref: "Student", required: true },
+		relation: { 
+			type: String, 
+			required: true,
+			enum: ["mother", "father", "guardian"]
+		},
+	},
+	{ collection: "parent" },
+);
+
 const User = model("User", userSchema);
 const Session = model("Session", sessionSchema);
 const Account = model("Account", accountSchema);
 const Verification = model("Verification", verificationSchema);
+const Student = model("Student", studentSchema);
+const Teacher = model("Teacher", teacherSchema);
+const Parent = model("Parent", parentSchema);
 
-export { User, Session, Account, Verification };
+export { User, Session, Account, Verification, Student, Teacher, Parent };
