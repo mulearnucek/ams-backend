@@ -6,7 +6,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import AutoLoad from "@fastify/autoload";
 
-import { auth } from "./plugins/auth";
+import { auth } from "./plugins/auth/index.js";
 
 const fastify = Fastify({
 	logger: true,
@@ -14,7 +14,7 @@ const fastify = Fastify({
 
 // CORS configuration
 fastify.register(cors, {
-	origin: process.env.CORS_ORIGIN || "",
+	origin: process.env.CORS_ORIGIN || "*",
 	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 	allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 	credentials: true,

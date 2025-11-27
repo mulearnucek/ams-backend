@@ -1,6 +1,6 @@
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { client } from "../db";
+import { client } from "../db/index.js";
 
 export const auth = betterAuth<BetterAuthOptions>({
 	database: mongodbAdapter(client),
@@ -14,6 +14,7 @@ export const auth = betterAuth<BetterAuthOptions>({
 			enabled: true,
 			clientId: process.env.GOOGLE_CLIENT_ID || "",
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+			redirectURI: process.env.GOOGLE_REDIRECT_URI || undefined,
 		}
 	},
 	advanced: {
