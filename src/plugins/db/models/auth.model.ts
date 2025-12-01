@@ -1,6 +1,6 @@
 import { role } from "better-auth/client";
 import { password } from "bun";
-import mongoose, { mongo } from "mongoose";
+import mongoose, { mongo, InferSchemaType } from "mongoose";
 import { string } from "zod";
 import { required } from "zod/mini";
 
@@ -17,7 +17,7 @@ const userSchema = new Schema(
 		updatedAt: { type: Date, required: true },
 		first_name: { type: String, required: true },
 		last_name: { type: String, required: true },
-		role_of_user: { 
+		role: { 
 			type: String, 
 			required: true,
 			enum: ["student", "teacher", "parent", "principal", "hod", "staff", "admin"]
@@ -127,5 +127,8 @@ const Verification = model("Verification", verificationSchema);
 const Student = model("Student", studentSchema);
 const Teacher = model("Teacher", teacherSchema);
 const Parent = model("Parent", parentSchema);
+
+export type UserType = InferSchemaType<typeof userSchema>;
+export type SessionType = InferSchemaType<typeof sessionSchema>;
 
 export { User, Session, Account, Verification, Student, Teacher, Parent };

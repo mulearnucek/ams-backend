@@ -5,6 +5,17 @@ import { client } from "../db/index.js";
 export const auth = betterAuth<BetterAuthOptions>({
 	database: mongodbAdapter(client),
 	trustedOrigins: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN_DEV].filter((origin): origin is string => !!origin),
+	user: {
+		modelName: "User",
+		additionalFields: {
+			role: {
+				type: "string",
+				required: false,
+				defaultValue: "student",
+				input: false,
+			},
+		},
+	},
 	emailAndPassword: {
 		enabled: true,
 	},
