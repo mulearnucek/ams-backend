@@ -6,7 +6,7 @@ export const auth = betterAuth<BetterAuthOptions>({
 	database: mongodbAdapter(client),
 	trustedOrigins: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN_DEV].filter((origin): origin is string => !!origin),
 	user: {
-		modelName: "User",
+		modelName: "user",
 		additionalFields: {
 			role: {
 				type: "string",
