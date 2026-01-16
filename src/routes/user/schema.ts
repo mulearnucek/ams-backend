@@ -1,5 +1,29 @@
 import { RouteShorthandOptions } from "fastify";
 
+export const userListSchema: RouteShorthandOptions["schema"] = {
+  querystring: {
+    type: "object",
+    required: ["role"],
+    properties: {
+      page: { type: "number", minimum: 1, default: 1 },
+      limit: { type: "number", minimum: 1, maximum: 100, default: 10 },
+      role: {
+        type: "string",
+        enum: [
+          "student",
+          "teacher",
+          "parent",
+          "principal",
+          "hod",
+          "staff",
+          "admin",
+        ],
+      },
+      search: { type: "string", minLength: 1 },
+    },
+  },
+};
+
 export const userUpdateSchema: RouteShorthandOptions["schema"] = {
   body: {
     type: "object",

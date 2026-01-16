@@ -8,6 +8,8 @@ Base URL: `/user`
   - [Get User Profile](#get-user-profile)
   - [Create User](#create-user)
   - [Update User](#update-user)
+  - [Admin: List Users](#admin-list-users)
+  - [Admin: Get User by ID](#admin-get-user-by-id)
   - [Admin: Update User by ID](#admin-update-user-by-id)
   - [Admin: Delete User](#admin-delete-user)
 
@@ -267,6 +269,195 @@ curl -X PUT http://localhost:4000/user \
 
 ---
 
+### Admin: List Users
+
+List all users of a specific role with pagination, search, and filtering capabilities (admin only).
+
+**Endpoint:** `GET /user/list`
+
+**Authentication:** Required (Admin role)
+
+**Query Parameters:**
+- `role` (required) - User role to filter by: `student`, `teacher`, `parent`, `principal`, `hod`, `staff`, or `admin`
+- `page` (optional) - Page number for pagination (default: 1, minimum: 1)
+- `limit` (optional) - Number of results per page (default: 10, minimum: 1, maximum: 100)
+- `search` (optional) - Search query to filter by name, email, first_name, or last_name (case-insensitive)
+
+**Example Requests:**
+```bash
+# List all students (first page, 10 per page)
+GET /user/list?role=student
+
+# List teachers with pagination
+GET /user/list?role=teacher&page=2&limit=20
+
+# Search for parents
+GET /user/list?role=parent&search=john
+
+# List admins with custom limit
+GET /user/list?role=admin&limit=50
+```
+
+**Response Format:**
+
+**For Students:**
+```json
+{
+  "status_code": 200,
+  "message": "Students fetched successfully",
+  "data": {
+    "users": [
+      {
+        "_id": "student_record_id",
+        "user": {
+          "_id": "user_id",
+          "name": "John Doe",
+          "email": "john@example.com",
+          "emailVerified": true,
+          "image": "profile.jpg",
+          "first_name": "John",
+          "last_name": "Doe",
+          "role": "student",
+          "gender": "male",
+          "phone": 1234567890,
+          "createdAt": "2025-01-01T00:00:00.000Z",
+          "updatedAt": "2025-01-01T00:00:00.000Z"
+        },
+        "adm_number": "ADM2024001",
+        "adm_year": 2024,
+        "candidate_code": "CAND001",
+        "department": "CSE",
+        "date_of_birth": "2005-01-15T00:00:00.000Z",
+        "batch": {
+          "_id": "batch_id",
+          "name": "Batch 2024",
+          "year": 2024
+        }
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 5,
+      "totalUsers": 50,
+      "limit": 10,
+      "hasNextPage": true,
+      "hasPreviousPage": false
+    }
+  }
+}
+```
+
+**For Teachers/Staff/Admin:**
+```json
+{
+  "status_code": 200,
+  "message": "Teachers fetched successfully",
+  "data": {
+    "users": [
+      {
+        "_id": "teacher_record_id",
+        "user": {
+          "_id": "user_id",
+          "name": "Jane Smith",
+          "email": "jane@example.com",
+          "role": "teacher",
+          "phone": 9876543210
+        },
+        "designation": "Assistant Professor",
+        "department": "CSE",
+        "date_of_joining": "2020-06-01T00:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 3,
+      "totalUsers": 25,
+      "limit": 10,
+      "hasNextPage": true,
+      "hasPreviousPage": false
+    }
+  }
+}
+```
+
+**For Parents:**
+```json
+{
+  "status_code": 200,
+  "message": "Parents fetched successfully",
+  "data": {
+    "users": [
+      {
+        "_id": "parent_record_id",
+        "user": {
+          "_id": "user_id",
+          "name": "Robert Brown",
+          "email": "robert@example.com",
+          "role": "parent"
+        },
+        "relation": "father",
+        "child": {
+          "_id": "student_id",
+          "adm_number": "ADM2024001",
+          "candidate_code": "CAND001",
+          "user": {
+            "name": "Child Name",
+            "first_name": "Child",
+            "last_name": "Name"
+          }
+        }
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 2,
+      "totalUsers": 15,
+      "limit": 10,
+      "hasNextPage": true,
+      "hasPreviousPage": false
+    }
+  }
+}
+```
+
+**Response Codes:**
+- `200` - Success
+- `400` - Invalid role specified
+- `403` - Forbidden (not admin)
+- `401` - Unauthorized
+- `500` - Server error
+
+**Features:**
+1. **Role-Based Queries**: Fetches data from role-specific models (Student, Teacher, Parent) and populates user details
+2. **Efficient Pagination**: Returns only the requested page of results with metadata
+3. **Search**: Case-insensitive search across name, email, first_name, and last_name fields
+4. **No Mixing**: Users with different roles are never intermixed - each request returns only one role type
+5. **Complete Details**: Includes all role-specific data (admission info, designation, child details, etc.)
+
+---
+
+### Admin: Get User by ID
+
+Retrieve a specific user's profile by ID (admin only).
+
+**Endpoint:** `GET /user/:id`
+
+**Authentication:** Required (Admin role)
+
+**Parameters:**
+- `id` (path parameter) - User ID to fetch
+
+**Response:** Same format as [Get User Profile](#get-user-profile)
+
+**Response Codes:**
+- `200` - Success
+- `403` - Forbidden (not admin)
+- `404` - User not found
+- `422` - User data not added (role-specific data missing)
+- `401` - Unauthorized
+
+---
+
 ### Admin: Update User by ID
 
 Update any user's profile (admin only).
@@ -430,6 +621,12 @@ Delete a user and all associated data (admin only).
 
 4. **Profile Completion**: After signup, users must have their role-specific data populated. The GET endpoint returns a 422 status if this data is missing.
 
-5. **Admin Privileges**: Admin routes (`PUT /user/:id` and `DELETE /user/:id`) require admin role authentication.
+5. **Admin Privileges**: Admin routes (`GET /user/list`, `GET /user/:id`, `PUT /user/:id`, and `DELETE /user/:id`) require admin role authentication.
 
 6. **Default Role**: New users are automatically assigned the "student" role unless specified otherwise.
+
+7. **List Users Endpoint**: The `/user/list` endpoint requires a `role` parameter to prevent mixing different user types. This ensures data consistency and efficient queries.
+
+8. **Pagination Best Practices**: Use appropriate `limit` values (default: 10, max: 100) to balance performance and usability. Large result sets should be paginated.
+
+9. **Search Performance**: The search functionality queries across multiple fields (name, email, first_name, last_name) and filters by role, ensuring accurate results without mixing user types.

@@ -416,3 +416,166 @@ export const deleteUser = async (
     });
   }
 };
+
+export const listUser = async (
+  request: FastifyRequest<{
+    Querystring: {
+      page?: number;
+      limit?: number;
+      role: string;
+      search?: string;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { page = 1, limit = 10, role, search } = request.query;
+
+    const skip = (page - 1) * limit;
+    let totalCount = 0;
+    let results: any[] = [];
+
+    // Build search filter for user fields
+    const userSearchFilter: any = {};
+    if (search) {
+      userSearchFilter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { first_name: { $regex: search, $options: "i" } },
+        { last_name: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (role === "student") {
+      const userFilter: any = { role: "student" };
+      if (search) {
+        Object.assign(userFilter, userSearchFilter);
+      }
+
+      // Get matching user IDs first if search is provided
+      const matchingUsers = search
+        ? await User.find(userFilter).select("_id").lean()
+        : null;
+
+      const studentFilter: any = matchingUsers
+        ? { user: { $in: matchingUsers.map((u) => u._id) } }
+        : {};
+
+      totalCount = await Student.countDocuments(studentFilter);
+      results = await Student.find(studentFilter)
+        .populate({
+          path: "user",
+          select: "-password_hash",
+        })
+        .populate("batch", "name year")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean();
+    } else if (
+      ["teacher", "principal", "hod", "admin", "staff"].includes(role)
+    ) {
+      const userFilter: any = { role };
+      if (search) {
+        Object.assign(userFilter, userSearchFilter);
+      }
+
+      const matchingUsers = search
+        ? await User.find(userFilter).select("_id").lean()
+        : null;
+
+      const teacherFilter: any = matchingUsers
+        ? { user: { $in: matchingUsers.map((u) => u._id) } }
+        : {};
+
+      // Additional filter to match role from populated user
+      if (!search) {
+        // If no search, we need to filter by role after population
+        const allTeachers = await Teacher.find({})
+          .populate({
+            path: "user",
+            match: { role },
+            select: "-password_hash",
+          })
+          .lean();
+
+        const filteredTeachers = allTeachers.filter((t: any) => t.user !== null);
+        totalCount = filteredTeachers.length;
+        results = filteredTeachers.slice(skip, skip + limit);
+      } else {
+        totalCount = await Teacher.countDocuments(teacherFilter);
+        results = await Teacher.find(teacherFilter)
+          .populate({
+            path: "user",
+            select: "-password_hash",
+          })
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 })
+          .lean();
+      }
+    } else if (role === "parent") {
+      const userFilter: any = { role: "parent" };
+      if (search) {
+        Object.assign(userFilter, userSearchFilter);
+      }
+
+      const matchingUsers = search
+        ? await User.find(userFilter).select("_id").lean()
+        : null;
+
+      const parentFilter: any = matchingUsers
+        ? { user: { $in: matchingUsers.map((u) => u._id) } }
+        : {};
+
+      totalCount = await Parent.countDocuments(parentFilter);
+      results = await Parent.find(parentFilter)
+        .populate({
+          path: "user",
+          select: "-password_hash",
+        })
+        .populate({
+          path: "child",
+          select: "adm_number candidate_code",
+          populate: {
+            path: "user",
+            select: "name first_name last_name",
+          },
+        })
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean();
+    } else {
+      return reply.status(400).send({
+        status_code: 400,
+        message: "Invalid role specified",
+        data: "",
+      });
+    }
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return reply.send({
+      status_code: 200,
+      message: `${role.charAt(0).toUpperCase() + role.slice(1)}s fetched successfully`,
+      data: {
+        users: results,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalUsers: totalCount,
+          limit,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1,
+        },
+      },
+    });
+  } catch (e) {
+    return reply.status(500).send({
+      status_code: 500,
+      message: "Error fetching users",
+      error: e,
+    });
+  }
+};
