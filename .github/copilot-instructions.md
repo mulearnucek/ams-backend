@@ -296,6 +296,11 @@ When creating new endpoints:
    - Error codes
    - Data models
    - Notes and best practices
+4. **Update `docs/index.md`** - Add the new documentation file to the index:
+   - Add link in the appropriate section of the Table of Contents
+   - Update "Last Updated" date at the bottom
+   - Maintain consistent formatting with existing entries
+   - Group related APIs together (e.g., all attendance-related docs together)
 
 ## Testing Approach
 
