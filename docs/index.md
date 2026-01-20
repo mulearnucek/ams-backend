@@ -1,6 +1,6 @@
 # AMS Backend API Documentation
 
-Welcome to the AMS (Attendance Management System) Backend API documentation. This documentation provides detailed information about all available API endpoints, their usage, and best practices.
+Welcome to the AMS (Academic Management System) Backend API documentation. This documentation provides detailed information about all available API endpoints, their usage, and best practices.
 
 ## Table of Contents
 
