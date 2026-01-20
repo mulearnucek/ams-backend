@@ -23,7 +23,6 @@ const attendanceSessionSchema  = new Schema(
             ref: "Teacher", 
             required: true 
         },
-        session_date : { type: Date, required: true },
         start_time : { type: Date, required: true },
         end_time : { type: Date, required: true },
         hours_taken : { type: Number, required: true },
