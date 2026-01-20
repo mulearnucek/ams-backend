@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { AttendanceRecord, AttendanceSession } from "@/plugins/db/models/attendence.model";
+import { AttendanceRecord, AttendanceSession } from "@/plugins/db/models/attendance.model";
 import { Teacher, User } from "@/plugins/db/models/auth.model";
 
 export const createRecord = async (

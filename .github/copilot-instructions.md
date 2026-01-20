@@ -233,7 +233,7 @@ export const schema: RouteShorthandOptions["schema"] = {
 
 ### Creating a New CRUD Endpoint
 
-1. **Create route folder** under appropriate parent (e.g., `routes/academics/grades/`)
+1. **Create route folder** under appropriate parent (e.g., `routes/grades/`)
 2. **Create three files**: `index.ts`, `schema.ts`, `service.ts`
 3. **Define schemas** for create, update, list operations
 4. **Implement services** with proper error handling
@@ -343,7 +343,7 @@ Check `.env` for configuration:
 
 Routes are automatically loaded by `@fastify/autoload`. The URL path matches the folder structure:
 - `routes/user/index.ts` → `/user`
-- `routes/academics/attendance/session/index.ts` → `/academics/attendance/session`
+- `routes/attendance/session/index.ts` → `/attendance/session`
 - `routes/notifications/index.ts` → `/notifications`
 
 ## Additional Notes
@@ -357,4 +357,4 @@ Routes are automatically loaded by `@fastify/autoload`. The URL path matches the
 
 ---
 
-**When in doubt**, follow the patterns established in existing routes like `/user`, `/notifications`, and `/academics/attendance/session`.
+**When in doubt**, follow the patterns established in existing routes like `/user`, `/notifications`, and `/attendance/session`.

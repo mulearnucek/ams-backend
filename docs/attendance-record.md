@@ -1,6 +1,6 @@
 # Attendance Record API Documentation
 
-Base URL: `/academics/attendance/record`
+Base URL: `/attendance/record`
 
 ## Table of Contents
 - [Authentication](#authentication)
@@ -33,7 +33,7 @@ All endpoints require authentication via session cookies. Only staff members (te
 
 Retrieve a paginated list of attendance records with optional filtering.
 
-**Endpoint:** `GET /academics/attendance/record`
+**Endpoint:** `GET /attendance/record`
 
 **Authentication:** Required (Staff only)
 
@@ -116,7 +116,7 @@ Retrieve a paginated list of attendance records with optional filtering.
 
 Retrieve details of a specific attendance record.
 
-**Endpoint:** `GET /academics/attendance/record/:id`
+**Endpoint:** `GET /attendance/record/:id`
 
 **Authentication:** Required (Staff only)
 
@@ -182,7 +182,7 @@ Retrieve details of a specific attendance record.
 
 Create a new attendance record for a student in a session. The `marked_by` field is automatically set to the authenticated teacher.
 
-**Endpoint:** `POST /academics/attendance/record`
+**Endpoint:** `POST /attendance/record`
 
 **Authentication:** Required (Staff only)
 
@@ -236,7 +236,7 @@ Create a new attendance record for a student in a session. The `marked_by` field
 
 Create multiple attendance records for a session at once. This is useful for marking attendance for an entire class.
 
-**Endpoint:** `POST /academics/attendance/record/bulk`
+**Endpoint:** `POST /attendance/record/bulk`
 
 **Authentication:** Required (Staff only)
 
@@ -334,7 +334,7 @@ Create multiple attendance records for a session at once. This is useful for mar
 
 Update an existing attendance record. Only the record marker or admin/principal/hod can update.
 
-**Endpoint:** `PUT /academics/attendance/record/:id`
+**Endpoint:** `PUT /attendance/record/:id`
 
 **Authentication:** Required (Staff only)
 
@@ -419,7 +419,7 @@ All fields are optional. Only include fields you want to update.
 
 Delete an attendance record. Only the record marker or admin/principal/hod can delete.
 
-**Endpoint:** `DELETE /academics/attendance/record/:id`
+**Endpoint:** `DELETE /attendance/record/:id`
 
 **Authentication:** Required (Staff only)
 

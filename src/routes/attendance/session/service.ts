@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { AttendanceSession } from "@/plugins/db/models/attendence.model";
+import { AttendanceSession } from "@/plugins/db/models/attendance.model";
 import { Teacher, User } from "@/plugins/db/models/auth.model";
 
 export const createSession = async (

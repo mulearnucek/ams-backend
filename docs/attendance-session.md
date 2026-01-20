@@ -1,6 +1,6 @@
 # Attendance Session API Documentation
 
-Base URL: `/academics/attendance/session`
+Base URL: `/attendance/session`
 
 ## Table of Contents
 - [Authentication](#authentication)
@@ -32,7 +32,7 @@ All endpoints require authentication via session cookies. Only staff members (te
 
 Retrieve a paginated list of attendance sessions with optional filtering.
 
-**Endpoint:** `GET /academics/attendance/session`
+**Endpoint:** `GET /attendance/session`
 
 **Authentication:** Required (Staff only)
 
@@ -105,7 +105,7 @@ Retrieve a paginated list of attendance sessions with optional filtering.
 
 Retrieve details of a specific attendance session.
 
-**Endpoint:** `GET /academics/attendance/session/:id`
+**Endpoint:** `GET /attendance/session/:id`
 
 **Authentication:** Required (Staff only)
 
@@ -162,7 +162,7 @@ Retrieve details of a specific attendance session.
 
 Create a new attendance session. The `created_by` field is automatically set to the authenticated teacher.
 
-**Endpoint:** `POST /academics/attendance/session`
+**Endpoint:** `POST /attendance/session`
 
 **Authentication:** Required (Staff only)
 
@@ -222,7 +222,7 @@ Create a new attendance session. The `created_by` field is automatically set to 
 
 Update an existing attendance session. Only the session creator or admin/principal/hod can update.
 
-**Endpoint:** `PUT /academics/attendance/session/:id`
+**Endpoint:** `PUT /attendance/session/:id`
 
 **Authentication:** Required (Staff only)
 
@@ -296,7 +296,7 @@ All fields are optional. Only include fields you want to update.
 
 Delete an attendance session. Only the session creator or admin/principal/hod can delete.
 
-**Endpoint:** `DELETE /academics/attendance/session/:id`
+**Endpoint:** `DELETE /attendance/session/:id`
 
 **Authentication:** Required (Staff only)
 
