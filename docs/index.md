@@ -14,6 +14,10 @@ Welcome to the AMS (Academic Management System) Backend API documentation. This 
 - [Attendance Session API](attendance-session.md) - Manage class sessions for attendance tracking
 - [Attendance Record API](attendance-record.md) - Mark and manage individual student attendance records
 
+### Academic Management
+- [Batch API](batch.md) - Manage student batches/classes with department and staff advisor
+- [Subject API](subject.md) - Manage course subjects with marks and faculty assignments
+
 ## Overview
 
 All APIs follow consistent patterns:
@@ -44,6 +48,12 @@ All APIs follow consistent patterns:
 **Notifications**
 - Get user notifications: `GET /notifications`
 - Create notification: `POST /notifications`
+
+**Academic Management**
+- List batches: `GET /batch`
+- Create batch: `POST /batch`
+- List subjects: `GET /subject`
+- Create subject: `POST /subject`
 
 ## Getting Started
 
