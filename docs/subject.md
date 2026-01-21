@@ -18,7 +18,7 @@ All endpoints require a valid authentication token. Include the token in your re
 ### 1. List Subjects
 Retrieve a paginated list of all subjects with optional filtering.
 
-**Endpoint:** `GET /subject`
+**Endpoint:** `GET /academics/subject`
 
 **Access:** Any staff (teacher, hod, principal, staff, admin)
 
@@ -62,7 +62,7 @@ Retrieve a paginated list of all subjects with optional filtering.
 ### 2. Get Subject by ID
 Retrieve details of a specific subject.
 
-**Endpoint:** `GET /subject/:id`
+**Endpoint:** `GET /academics/subject/:id`
 
 **Access:** Any staff (teacher, hod, principal, staff, admin)
 
@@ -96,7 +96,7 @@ Retrieve details of a specific subject.
 ### 3. Create Subject
 Create a new subject.
 
-**Endpoint:** `POST /subject`
+**Endpoint:** `POST /academics/subject`
 
 **Access:** Admin only
 
@@ -150,7 +150,7 @@ Create a new subject.
 ### 4. Update Subject
 Update an existing subject.
 
-**Endpoint:** `PUT /subject/:id`
+**Endpoint:** `PUT /academics/subject/:id`
 
 **Access:** Admin only
 
@@ -207,7 +207,7 @@ All parameters are optional. Only provide fields you want to update.
 ### 5. Delete Subject
 Delete a subject.
 
-**Endpoint:** `DELETE /subject/:id`
+**Endpoint:** `DELETE /academics/subject/:id`
 
 **Access:** Admin only
 

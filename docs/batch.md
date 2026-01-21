@@ -18,7 +18,7 @@ All endpoints require a valid authentication token. Include the token in your re
 ### 1. List Batches
 Retrieve a paginated list of all batches with optional filtering.
 
-**Endpoint:** `GET /batch`
+**Endpoint:** `GET /academics/batch`
 
 **Access:** Any staff (teacher, hod, principal, staff, admin)
 
@@ -67,7 +67,7 @@ Retrieve a paginated list of all batches with optional filtering.
 ### 2. Get Batch by ID
 Retrieve details of a specific batch.
 
-**Endpoint:** `GET /batch/:id`
+**Endpoint:** `GET /academics/batch/:id`
 
 **Access:** Any staff (teacher, hod, principal, staff, admin)
 
@@ -106,7 +106,7 @@ Retrieve details of a specific batch.
 ### 3. Create Batch
 Create a new batch.
 
-**Endpoint:** `POST /batch`
+**Endpoint:** `POST /academics/batch`
 
 **Access:** Admin only
 
@@ -159,7 +159,7 @@ Create a new batch.
 ### 4. Update Batch
 Update an existing batch.
 
-**Endpoint:** `PUT /batch/:id`
+**Endpoint:** `PUT /academics/batch/:id`
 
 **Access:** Admin only
 
@@ -219,7 +219,7 @@ All parameters are optional. Only provide fields you want to update.
 ### 5. Delete Batch
 Delete a batch.
 
-**Endpoint:** `DELETE /batch/:id`
+**Endpoint:** `DELETE /academics/batch/:id`
 
 **Access:** Admin only
 

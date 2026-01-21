@@ -18,6 +18,10 @@ Welcome to the AMS (Academic Management System) Backend API documentation. This 
 - [Batch API](batch.md) - Manage student batches/classes with department and staff advisor
 - [Subject API](subject.md) - Manage course subjects with marks and faculty assignments
 
+### Grade Management
+- [Grade Field API](grade-field.md) - Manage grade evaluation criteria and assessment components
+- [Grade Entry API](grade-entry.md) - Record and manage individual student grades
+
 ## Overview
 
 All APIs follow consistent patterns:
@@ -36,24 +40,30 @@ All APIs follow consistent patterns:
 - Update user profile: `PUT /user`
 
 **Attendance Sessions**
-- List sessions: `GET /academics/attendance/session`
-- Create session: `POST /academics/attendance/session`
-- Get session details: `GET /academics/attendance/session/:id`
+- List sessions: `GET /attendance/session`
+- Create session: `POST /attendance/session`
+- Get session details: `GET /attendance/session/:id`
 
 **Attendance Records**
-- Mark single attendance: `POST /academics/attendance/record`
-- Bulk mark attendance: `POST /academics/attendance/record/bulk`
-- View attendance records: `GET /academics/attendance/record?session={id}`
+- Mark single attendance: `POST /attendance/record`
+- Bulk mark attendance: `POST /attendance/record/bulk`
+- View attendance records: `GET /attendance/record?session={id}`
 
 **Notifications**
 - Get user notifications: `GET /notifications`
 - Create notification: `POST /notifications`
 
 **Academic Management**
-- List batches: `GET /batch`
-- Create batch: `POST /batch`
-- List subjects: `GET /subject`
-- Create subject: `POST /subject`
+- List batches: `GET /academics/batch`
+- Create batch: `POST /academics/batch`
+- List subjects: `GET /academics/subject`
+- Create subject: `POST /academics/subject`
+
+**Grade Management**
+- List grade fields: `GET /academics/grade-field`
+- Create grade field: `POST /academics/grade-field`
+- List grade entries: `GET /academics/grade-entry`
+- Bulk create entries: `POST /academics/grade-entry/bulk`
 
 ## Getting Started
 
