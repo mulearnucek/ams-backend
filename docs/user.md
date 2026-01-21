@@ -8,6 +8,7 @@ Base URL: `/user`
   - [Get User Profile](#get-user-profile)
   - [Create User](#create-user)
   - [Update User](#update-user)
+  - [Admin: Bulk Create Users](#admin-bulk-create-users)
   - [Admin: List Users](#admin-list-users)
   - [Admin: Get User by ID](#admin-get-user-by-id)
   - [Admin: Update User by ID](#admin-update-user-by-id)
@@ -608,6 +609,104 @@ Delete a user and all associated data (admin only).
   "error": "Error details"
 }
 ```
+
+---
+
+### Admin: Bulk Create Users
+
+Create multiple users at once. Admin-only endpoint.
+
+**Endpoint:** `POST /user/bulk`
+
+**Authentication:** Required (Admin only)
+
+**Request Body:**
+```json
+{
+  "users": [
+    {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "student",
+      "password": "optional_password123"
+    },
+    {
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "role": "teacher"
+    }
+  ]
+}
+```
+
+**Body Parameters:**
+- `users` (required, array, 1-100 items) - Array of user objects
+  - `name` (required, string, min 3 chars) - User's full name
+  - `email` (required, string, email format) - User's email address
+  - `role` (required, string) - One of: `student`, `teacher`, `parent`, `principal`, `hod`, `staff`, `admin`
+  - `password` (optional, string, min 8 chars) - User's password. If not provided, a random secure password is generated
+
+**Response Codes:**
+- `201` - All users created successfully
+- `207` - Multi-Status (some succeeded, some failed)
+- `400` - Bad request (validation error)
+- `401` - Unauthorized
+- `403` - Forbidden (not admin)
+- `500` - Server error
+
+**Success Response (201):**
+```json
+{
+  "status_code": 201,
+  "message": "Bulk user creation completed. 2 succeeded, 0 failed.",
+  "data": {
+    "success": [
+      {
+        "email": "john@example.com",
+        "role": "student",
+        "userId": "user_id_1"
+      },
+      {
+        "email": "jane@example.com",
+        "role": "teacher",
+        "userId": "user_id_2"
+      }
+    ],
+    "failed": []
+  }
+}
+```
+
+**Partial Success Response (207):**
+```json
+{
+  "status_code": 207,
+  "message": "Bulk user creation completed. 1 succeeded, 1 failed.",
+  "data": {
+    "success": [
+      {
+        "email": "john@example.com",
+        "role": "student",
+        "userId": "user_id_1"
+      }
+    ],
+    "failed": [
+      {
+        "email": "duplicate@example.com",
+        "error": "User with this email already exists"
+      }
+    ]
+  }
+}
+```
+
+**Notes:**
+- Only creates base User accounts with email, name, and role
+- Users must complete their role-specific profiles (student/teacher/parent data) later via PUT `/user`
+- Random secure passwords are auto-generated if not provided
+- Duplicate emails are detected and reported in the failed array
+- Maximum 100 users per request
+- Each user is processed independently - some may succeed while others fail
 
 ---
 

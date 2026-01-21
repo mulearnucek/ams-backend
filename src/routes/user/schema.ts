@@ -243,3 +243,40 @@ export const userCreateSchema: RouteShorthandOptions["schema"] = {
     additionalProperties: false,
   },
 };
+
+export const bulkCreateSchema: RouteShorthandOptions["schema"] = {
+  body: {
+    type: "object",
+    required: ["users"],
+    properties: {
+      users: {
+        type: "array",
+        minItems: 1,
+        maxItems: 100,
+        items: {
+          type: "object",
+          required: ["email", "name", "role"],
+          properties: {
+            email: { type: "string", format: "email" },
+            password: { type: "string", minLength: 8 },
+            name: { type: "string", minLength: 3 },
+            role: {
+              type: "string",
+              enum: [
+                "student",
+                "teacher",
+                "parent",
+                "principal",
+                "hod",
+                "staff",
+                "admin",
+              ],
+            },
+          },
+          additionalProperties: false,
+        },
+      },
+    },
+    additionalProperties: false,
+  },
+};

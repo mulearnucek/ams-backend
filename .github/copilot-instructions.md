@@ -286,6 +286,8 @@ if (
 
 ## Documentation
 
+**CRITICAL**: Always update documentation when creating or modifying API endpoints.
+
 When creating new endpoints:
 1. **Update or create** documentation in `docs/` folder
 2. **Follow** existing documentation format (see `docs/attendance-session.md`)
@@ -301,6 +303,12 @@ When creating new endpoints:
    - Update "Last Updated" date at the bottom
    - Maintain consistent formatting with existing entries
    - Group related APIs together (e.g., all attendance-related docs together)
+
+When modifying existing endpoints:
+1. **Update the corresponding documentation file** in `docs/`
+2. **Revise** all affected sections (parameters, responses, examples, notes)
+3. **Add or update notes** to highlight changes or important behaviors
+4. **Keep examples current** - ensure they reflect the actual API behavior
 
 ## Testing Approach
 

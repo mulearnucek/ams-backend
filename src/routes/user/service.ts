@@ -579,3 +579,93 @@ export const listUser = async (
     });
   }
 };
+
+export const bulkCreateUsers = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const { users } = request.body as {
+      users: Array<{
+        email: string;
+        password?: string;
+        name: string;
+        role: string;
+      }>;
+    };
+
+    const results = {
+      success: [] as Array<{ email: string; role: string; userId: string }>,
+      failed: [] as Array<{ email: string; error: string }>,
+    };
+
+    // Process each user
+    for (const userData of users) {
+      try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ email: userData.email });
+        if (existingUser) {
+          results.failed.push({
+            email: userData.email,
+            error: "User with this email already exists",
+          });
+          continue;
+        }
+
+        // Generate random password if not provided
+        const password = userData.password || Math.random().toString(36).slice(-12) + "A1!";
+
+        // Create user with better-auth
+        const createdUser = await authClient.signUp.email({
+          email: userData.email,
+          password: password,
+          name: userData.name,
+        });
+
+        if (!createdUser || !createdUser.data || !createdUser.data.user) {
+          results.failed.push({
+            email: userData.email,
+            error: "Failed to create user account",
+          });
+          continue;
+        }
+
+        const userId = createdUser.data.user.id;
+
+        // Update user with role
+        await User.findByIdAndUpdate(userId, {
+          role: userData.role,
+          updatedAt: new Date(),
+        });
+
+        results.success.push({
+          email: userData.email,
+          role: userData.role,
+          userId: userId,
+        });
+      } catch (userError) {
+        results.failed.push({
+          email: userData.email,
+          error:
+            userError instanceof Error
+              ? userError.message
+              : "Unknown error occurred",
+        });
+      }
+    }
+
+    const statusCode = results.failed.length === 0 ? 201 : 207; // 207 = Multi-Status
+
+    return reply.status(statusCode).send({
+      status_code: statusCode,
+      message: `Bulk user creation completed. ${results.success.length} succeeded, ${results.failed.length} failed.`,
+      data: results,
+    });
+  } catch (error) {
+    return reply.status(500).send({
+      status_code: 500,
+      message: "Bulk user creation failed",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
