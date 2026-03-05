@@ -246,13 +246,15 @@ export const getRecentSessions = async (
           batch: {
             _id: "$batchInfo._id",
             name: "$batchInfo.name",
-            code: "$batchInfo.code",
-            year: "$batchInfo.year",
+            department: "$batchInfo.department",
+            adm_year: "$batchInfo.adm_year",
           },
           subject: {
             _id: "$subjectInfo._id",
             name: "$subjectInfo.name",
-            code: "$subjectInfo.code",
+            subject_code: "$subjectInfo.subject_code",
+            sem: "$subjectInfo.sem",
+            type: "$subjectInfo.type",
           },
           sessionCount: 1,
           latestSession: 1,
