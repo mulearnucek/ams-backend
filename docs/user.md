@@ -47,23 +47,21 @@ Retrieve the authenticated user's profile or a specific user's profile by ID.
 
 **Response Examples:**
 
-Student Profile:
+Success response (Student Profile):
 ```json
 {
   "status_code": 200,
   "message": "User profile fetched successfully",
   "data": {
     "_id": "student_id",
-    "user": {
-      "name": "John Doe",
-      "email": "john@example.com",
-      "first_name": "John",
-      "last_name": "Doe",
-      "role": "student",
-      "phone": 1234567890,
-      "createdAt": "2025-01-01T00:00:00.000Z",
-      "updatedAt": "2025-01-01T00:00:00.000Z"
-    },
+    "name": "John Doe",
+    "email": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "student",
+    "phone": 1234567890,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z",
     "gender": "male",
     "adm_number": "ADM2024001",
     "adm_year": 2024,
@@ -74,21 +72,42 @@ Student Profile:
 }
 ```
 
-Teacher Profile:
+Incomplete Data response (422 Unprocessable Entity):
+Returned when a user is partially created but missing fully validated, required role-specific traits. This includes the incomplete `profile` object and the base `user` for form pre-filling.
+
+```json
+{
+  "status_code": 422,
+  "message": "Student data need to be added.",
+  "data": {
+    "user": {
+      "_id": "user_id",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "student"
+    },
+    "profile": {
+      "_id": "student_id",
+      "batch": "batch_id",
+      "user": "user_id"
+    }
+  }
+}
+```
+
+Success response (Teacher Profile):
 ```json
 {
   "status_code": 200,
   "message": "User profile fetched successfully",
   "data": {
     "_id": "teacher_id",
-    "user": {
-      "name": "Jane Smith",
-      "email": "jane@example.com",
-      "first_name": "Jane",
-      "last_name": "Smith",
-      "role": "teacher",
-      "phone": 9876543210
-    },
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "first_name": "Jane",
+    "last_name": "Smith",
+    "role": "teacher",
+    "phone": 9876543210,
     "designation": "Assistant Professor",
     "department": "CSE",
     "date_of_joining": "2020-06-01T00:00:00.000Z"
@@ -103,11 +122,9 @@ Parent Profile:
   "message": "User profile fetched successfully",
   "data": {
     "_id": "parent_id",
-    "user": {
-      "name": "Robert Brown",
-      "email": "robert@example.com",
-      "role": "parent"
-    },
+    "name": "Robert Brown",
+    "email": "robert@example.com",
+    "role": "parent",
     "child": {
       "adm_number": "ADM2024001",
       "adm_year": 2024,
@@ -155,11 +172,12 @@ Create a new user account with role-specific data.
 ```json
 {
   "student": {
-    "adm_number": "string",
-    "adm_year": "number",
+    "batch": "string (batch ID) (required)",
+    "adm_number": "string (optional)",
+    "adm_year": "number (optional)",
     "candidate_code": "string (optional)",
-    "department": "CSE | ECE | IT",
-    "date_of_birth": "YYYY-MM-DD"
+    "department": "CSE | ECE | IT (optional)",
+    "date_of_birth": "YYYY-MM-DD (optional)"
   }
 }
 ```
@@ -223,6 +241,7 @@ All fields are optional. Only include fields you want to update.
   "last_name": "string",
   "gender": "male | female | other",
   "student": {
+    "batch": "string (batch ID)",
     "adm_number": "string",
     "adm_year": "number",
     "candidate_code": "string",
@@ -309,21 +328,18 @@ GET /user/list?role=admin&limit=50
   "data": {
     "users": [
       {
-        "_id": "student_record_id",
-        "user": {
-          "_id": "user_id",
-          "name": "John Doe",
-          "email": "john@example.com",
-          "emailVerified": true,
-          "image": "profile.jpg",
-          "first_name": "John",
-          "last_name": "Doe",
-          "role": "student",
-          "gender": "male",
-          "phone": 1234567890,
-          "createdAt": "2025-01-01T00:00:00.000Z",
-          "updatedAt": "2025-01-01T00:00:00.000Z"
-        },
+        "_id": "user_id",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "emailVerified": true,
+        "image": "profile.jpg",
+        "first_name": "John",
+        "last_name": "Doe",
+        "role": "student",
+        "gender": "male",
+        "phone": 1234567890,
+        "createdAt": "2025-01-01T00:00:00.000Z",
+        "updatedAt": "2025-01-01T00:00:00.000Z",
         "adm_number": "ADM2024001",
         "adm_year": 2024,
         "candidate_code": "CAND001",
@@ -356,14 +372,11 @@ GET /user/list?role=admin&limit=50
   "data": {
     "users": [
       {
-        "_id": "teacher_record_id",
-        "user": {
-          "_id": "user_id",
-          "name": "Jane Smith",
-          "email": "jane@example.com",
-          "role": "teacher",
-          "phone": 9876543210
-        },
+        "_id": "user_id",
+        "name": "Jane Smith",
+        "email": "jane@example.com",
+        "role": "teacher",
+        "phone": 9876543210,
         "designation": "Assistant Professor",
         "department": "CSE",
         "date_of_joining": "2020-06-01T00:00:00.000Z"
@@ -389,13 +402,10 @@ GET /user/list?role=admin&limit=50
   "data": {
     "users": [
       {
-        "_id": "parent_record_id",
-        "user": {
-          "_id": "user_id",
-          "name": "Robert Brown",
-          "email": "robert@example.com",
-          "role": "parent"
-        },
+        "_id": "user_id",
+        "name": "Robert Brown",
+        "email": "robert@example.com",
+        "role": "parent",
         "relation": "father",
         "child": {
           "_id": "student_id",
@@ -621,6 +631,9 @@ Create multiple users at once. Admin-only endpoint.
 **Authentication:** Required (Admin only)
 
 **Request Body:**
+
+*Note: All users must be of the same role in a single bulk request.*
+
 ```json
 {
   "users": [
@@ -628,23 +641,36 @@ Create multiple users at once. Admin-only endpoint.
       "name": "John Doe",
       "email": "john@example.com",
       "role": "student",
-      "password": "optional_password123"
+      "password": "optional_password123",
+      "batch": "24CSE",
+      "adm_number": "ADM2024001",
+      "candidate_code": "CAND001",
+      "department": "CSE"
     },
     {
       "name": "Jane Smith",
       "email": "jane@example.com",
-      "role": "teacher"
+      "role": "student",
+      "batch": "24CSE",
+      "department": "CSE"
     }
   ]
 }
 ```
 
 **Body Parameters:**
-- `users` (required, array, 1-100 items) - Array of user objects
+- `users` (required, array, 1-100 items) - Array of user objects (must all have the same `role`)
   - `name` (required, string, min 3 chars) - User's full name
   - `email` (required, string, email format) - User's email address
   - `role` (required, string) - One of: `student`, `teacher`, `parent`, `principal`, `hod`, `staff`, `admin`
   - `password` (optional, string, min 8 chars) - User's password. If not provided, a random secure password is generated
+  - **Student-only optional fields** (only valid if `role` is `student`):
+    - `batch` (string) - Batch ID (human-readable `YYDEPT` format like `24CSE`, or a batch ObjectId)
+    - `adm_number` (string)
+    - `adm_year` (number)
+    - `candidate_code` (string)
+    - `department` (string)
+    - `date_of_birth` (string / Date)
 
 **Response Codes:**
 - `201` - All users created successfully
@@ -668,7 +694,7 @@ Create multiple users at once. Admin-only endpoint.
       },
       {
         "email": "jane@example.com",
-        "role": "teacher",
+        "role": "student",
         "userId": "user_id_2"
       }
     ],
@@ -701,8 +727,10 @@ Create multiple users at once. Admin-only endpoint.
 ```
 
 **Notes:**
-- Only creates base User accounts with email, name, and role
-- Users must complete their role-specific profiles (student/teacher/parent data) later via PUT `/user`
+- Creates base User accounts with email, name, and role.
+- If `role` is `student`, it will simultaneously map provided optional student fields (like `batch`, `adm_number`, etc.) directly into a `Student` record.
+- Non-student users (or missing fields for students) must complete their role-specific profiles later via PUT `/user`
+- All users in a single bulk request must have the exact same role.
 - Random secure passwords are auto-generated if not provided
 - Duplicate emails are detected and reported in the failed array
 - Maximum 100 users per request

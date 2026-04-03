@@ -30,9 +30,6 @@ const userSchema = new Schema(
 	{ collection: "user" },
 );
 
-
-
-
 userSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
   // 'this' refers to the document being removed
   try {
@@ -103,15 +100,15 @@ const studentSchema = new Schema(
 	{
 		// _id: { type: String },
 		user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-		adm_number : {type: String, required: true , unique: true },
+		adm_number : {type: String, required: false , unique: true },
 		adm_year: { type: Number, required: true },
-		candidate_code: { type: String, required: true , unique: true },
+		candidate_code: { type: String, required: false , unique: true },
 		department: { 
-			type: String, 
-			required:true,
+			type: String, 	
+			required: true,
 			enum: ["CSE", "ECE", "IT"]
 		},
-		date_of_birth: { type: Date, required: true },
+		date_of_birth: { type: Date, required: false },
 		batch : {type: mongoose.Schema.Types.ObjectId, ref: "Batch", required: false },
 	},
 	{ collection: "student" },

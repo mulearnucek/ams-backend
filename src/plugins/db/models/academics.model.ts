@@ -9,6 +9,7 @@ const {Schema , model } = mongoose;
 const batchSchema = new Schema(
     {
         name : {type: String, required : true},
+        id: { type: String, required: true, unique: true, uppercase: true, trim: true },
         adm_year: { type: Number, required: true },
         department: { 
 			type: String, 

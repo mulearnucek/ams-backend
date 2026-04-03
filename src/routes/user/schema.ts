@@ -58,6 +58,7 @@ export const userUpdateSchema: RouteShorthandOptions["schema"] = {
           candidate_code: { type: "string" },
           department: { type: "string", enum: ["CSE", "ECE", "IT"] },
           date_of_birth: { type: "string", format: "date" },
+          batch: { type: "string" },
         },
         additionalProperties: false,
       },
@@ -99,6 +100,7 @@ export const userUpdateSchema: RouteShorthandOptions["schema"] = {
                 { type: "object", required: ["candidate_code"] },
                 { type: "object", required: ["department"] },
                 { type: "object", required: ["date_of_birth"] },
+                { type: "object", required: ["batch"] },
               ],
             },
           },
@@ -165,13 +167,13 @@ export const userCreateSchema: RouteShorthandOptions["schema"] = {
 
       student: {
         type: "object",
-        required: ["adm_number", "adm_year", "date_of_birth", "department"],
         properties: {
           adm_number: { type: "string" },
           adm_year: { type: "number" },
           candidate_code: { type: "string" },
           department: { type: "string", enum: ["CSE", "ECE", "IT"] },
           date_of_birth: { type: "string", format: "date" },
+          batch: { type: "string" },
         },
         additionalProperties: false,
       },
@@ -207,7 +209,6 @@ export const userCreateSchema: RouteShorthandOptions["schema"] = {
           properties: {
             student: {
               type: "object",
-              required: ["adm_number", "adm_year", "date_of_birth", "department"],
             },
           },
         },
@@ -255,11 +256,13 @@ export const bulkCreateSchema: RouteShorthandOptions["schema"] = {
         maxItems: 100,
         items: {
           type: "object",
-          required: ["email", "name", "role"],
+          required: ["first_name", "last_name", "role"],
           properties: {
             email: { type: "string", format: "email" },
+            generate_mail: { type: "boolean", default: false },
             password: { type: "string", minLength: 8 },
-            name: { type: "string", minLength: 3 },
+            first_name: { type: "string", minLength: 1 },
+            last_name: { type: "string", minLength: 1 },
             role: {
               type: "string",
               enum: [
@@ -272,6 +275,12 @@ export const bulkCreateSchema: RouteShorthandOptions["schema"] = {
                 "admin",
               ],
             },
+            adm_number: { type: "string" },
+            adm_year: { type: "number" },
+            candidate_code: { type: "string" },
+            department: { type: "string", enum: ["CSE", "ECE", "IT"] },
+            date_of_birth: { type: "string", format: "date" },
+            batch: { type: "string" },
           },
           additionalProperties: false,
         },

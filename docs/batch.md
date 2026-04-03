@@ -39,6 +39,7 @@ Retrieve a paginated list of all batches with optional filtering.
     "batches": [
       {
         "_id": "64abc123def456",
+        "id": "24CSE",
         "name": "CSE 2024 Batch A",
         "adm_year": 2024,
         "department": "CSE",
@@ -83,6 +84,7 @@ Retrieve details of a specific batch.
   "message": "Batch retrieved successfully",
   "data": {
     "_id": "64abc123def456",
+    "id": "24CSE",
     "name": "CSE 2024 Batch A",
     "adm_year": 2024,
     "department": "CSE",
@@ -113,6 +115,7 @@ Create a new batch.
 **Request Body:**
 ```json
 {
+  "id": "24CSE",
   "name": "CSE 2024 Batch A",
   "adm_year": 2024,
   "department": "CSE",
@@ -123,6 +126,7 @@ Create a new batch.
 **Body Parameters:**
 | Parameter | Type | Required | Constraints | Description |
 |-----------|------|----------|-------------|-------------|
+| id | string | No | Pattern: `^[0-9]{2}(CSE\|ECE\|IT)$` | Human-readable batch ID (defaults to `${lastTwoDigitsOfAdmYear}${DEPARTMENT}`) |
 | name | string | Yes | Min length: 1 | Batch name |
 | adm_year | number | Yes | 2000-2100 | Admission year |
 | department | string | Yes | Enum: CSE, ECE, IT | Department code |
@@ -135,6 +139,7 @@ Create a new batch.
   "message": "Batch created successfully",
   "data": {
     "_id": "64abc123def456",
+    "id": "24CSE",
     "name": "CSE 2024 Batch A",
     "adm_year": 2024,
     "department": "CSE",
@@ -153,6 +158,10 @@ Create a new batch.
 **Error Responses:**
 - `404`: Staff advisor (teacher) not found
 - `422`: Batch with this name and admission year already exists
+- `422`: Batch with this ID already exists
+
+**Notes:**
+- If `id` is omitted, it is generated as `${lastTwoDigitsOfAdmYear}${DEPARTMENT}` (example: `24CSE`).
 
 ---
 
@@ -172,6 +181,7 @@ Update an existing batch.
 ```json
 {
   "name": "CSE 2024 Batch A (Updated)",
+  "id": "24CSE",
   "department": "IT",
   "staff_advisor": "64xyz789abc999"
 }
@@ -182,6 +192,7 @@ All parameters are optional. Only provide fields you want to update.
 
 | Parameter | Type | Constraints | Description |
 |-----------|------|-------------|-------------|
+| id | string | Pattern: `^[0-9]{2}(CSE\|ECE\|IT)$` | Human-readable batch ID |
 | name | string | Min length: 1 | Batch name |
 | adm_year | number | 2000-2100 | Admission year |
 | department | string | Enum: CSE, ECE, IT | Department code |
@@ -194,6 +205,7 @@ All parameters are optional. Only provide fields you want to update.
   "message": "Batch updated successfully",
   "data": {
     "_id": "64abc123def456",
+    "id": "24CSE",
     "name": "CSE 2024 Batch A (Updated)",
     "adm_year": 2024,
     "department": "IT",
@@ -213,6 +225,7 @@ All parameters are optional. Only provide fields you want to update.
 - `404`: Batch not found
 - `404`: Staff advisor (teacher) not found (if updating staff_advisor)
 - `422`: Batch with this name and admission year already exists (if updating name/year)
+- `422`: Batch with this ID already exists (if updating id)
 
 ---
 
@@ -235,6 +248,7 @@ Delete a batch.
   "message": "Batch deleted successfully",
   "data": {
     "_id": "64abc123def456",
+    "id": "24CSE",
     "name": "CSE 2024 Batch A",
     "adm_year": 2024,
     "department": "CSE",
@@ -254,6 +268,7 @@ Delete a batch.
 ```typescript
 {
   _id: ObjectId,
+  id: string,
   name: string,
   adm_year: number,
   department: "CSE" | "ECE" | "IT",

@@ -15,6 +15,7 @@ interface GetBatchParams {
 
 interface CreateBatchBody {
   name: string;
+  id?: string;
   adm_year: number;
   department: "CSE" | "ECE" | "IT";
   staff_advisor: string;
@@ -26,6 +27,7 @@ interface UpdateBatchParams {
 
 interface UpdateBatchBody {
   name?: string;
+  id?: string;
   adm_year?: number;
   department?: "CSE" | "ECE" | "IT";
   staff_advisor?: string;
@@ -34,6 +36,11 @@ interface UpdateBatchBody {
 interface DeleteBatchParams {
   id: string;
 }
+
+const generateBatchId = (admYear: number, department: string) => {
+  const yearSuffix = String(admYear).slice(-2).padStart(2, "0");
+  return `${yearSuffix}${department.toUpperCase()}`;
+};
 
 export const listBatchesHandler = async (
   request: FastifyRequest,
@@ -126,7 +133,9 @@ export const createBatchHandler = async (
   reply: FastifyReply
 ) => {
   try {
-    const { name, adm_year, department, staff_advisor } = request.body as CreateBatchBody;
+    const { name, adm_year, department, staff_advisor, id } =
+      request.body as CreateBatchBody;
+    const batchId = (id || generateBatchId(adm_year, department)).toUpperCase();
 
     // Check if staff advisor exists
     const teacher = await Teacher.findById(staff_advisor);
@@ -148,8 +157,18 @@ export const createBatchHandler = async (
       });
     }
 
+    const existingBatchId = await Batch.findOne({ id: batchId });
+    if (existingBatchId) {
+      return reply.status(422).send({
+        status_code: 422,
+        message: "Batch with this ID already exists",
+        data: "",
+      });
+    }
+
     const batch = await Batch.create({
       name,
+      id: batchId,
       adm_year,
       department,
       staff_advisor,
@@ -184,6 +203,10 @@ export const updateBatchHandler = async (
   try {
     const { id } = request.params as UpdateBatchParams;
     const updateData = request.body as UpdateBatchBody;
+
+    if (updateData.id) {
+      updateData.id = updateData.id.toUpperCase();
+    }
 
     // Check if batch exists
     const batch = await Batch.findById(id);
@@ -222,6 +245,21 @@ export const updateBatchHandler = async (
         return reply.status(422).send({
           status_code: 422,
           message: "Batch with this name and admission year already exists",
+          data: "",
+        });
+      }
+    }
+
+    if (updateData.id) {
+      const existingBatchId = await Batch.findOne({
+        id: updateData.id,
+        _id: { $ne: id },
+      });
+
+      if (existingBatchId) {
+        return reply.status(422).send({
+          status_code: 422,
+          message: "Batch with this ID already exists",
           data: "",
         });
       }
