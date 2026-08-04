@@ -12,6 +12,12 @@ export const auth = betterAuth({
   trustedOrigins: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN_DEV].filter(
     (origin): origin is string => !!origin
   ),
+  account: {
+        accountLinking: {
+            enabled: true,
+            trustedProviders: ["google"],
+        }
+    },
   user: {
     modelName: "user",
     additionalFields: {
@@ -36,6 +42,7 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       redirectURI: process.env.GOOGLE_REDIRECT_URI || undefined,
+      disableImplicitSignUp: true,
     },
   },
    session: {
